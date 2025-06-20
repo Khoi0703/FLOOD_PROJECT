@@ -1,0 +1,14 @@
+dagster
+dagit
+pandas
+scikit-learn
+geopandas
+joblib
+numpy
+matplotlib
+seaborn
+openweathermap-api-client
+earthengine-api
+networkx
+torch
+streamlit

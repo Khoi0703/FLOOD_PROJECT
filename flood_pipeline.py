@@ -11,7 +11,7 @@ from assets.training import training
 from assets.evaluation import evaluation
 from assets.utils import utils
 from assets.predict_yenbai import predict_yenbai
-
+from assets.yenbai_rain import yenbai_rain 
 from jobs.model_job import model_job
 from jobs.data_job import data_job
 defs = Definitions(
@@ -26,6 +26,7 @@ defs = Definitions(
         training,
         evaluation,
         utils,
+        yenbai_rain,
         predict_yenbai
     ],
     jobs=[

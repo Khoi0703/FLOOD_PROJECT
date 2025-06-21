@@ -6,13 +6,13 @@ from assets.preprocessing import parse_list_string_to_2d_array
 from sklearn.preprocessing import StandardScaler
 
 @asset
-def predict_yenbai(training) -> pd.DataFrame:
+def predict_yenbai(training, yenbai_rain: pd.DataFrame) -> pd.DataFrame:
     model = training["model"]
     device = training["device"]
     model.eval()
 
     # === Load dữ liệu mới để predict ===
-    df = pd.read_csv("data/final/yenbai_final.csv")
+    df = pd.read_csv("data/final/yenbai_rainfall.csv")
 
     # Backup bản gốc chưa chuẩn hóa để xuất CSV
     df_original = df.copy()

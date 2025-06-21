@@ -99,6 +99,8 @@ dagster dev
 
 * `best_cnn_gnn_model.pth`: Mô hình đã huấn luyện
 * `yenbai_predictions_clean.csv`: Dự đoán điểm ngập
+* `yenbai_rainfall.csv`: Dữ liệu lượng mưa tỉnh Yên Bái.
+* `yenbai_final.csv`: Dữ liệu thông tin địa lý tỉnh Yên Bái.
 * `water_clusters.csv`: Cụm vùng có nước
 
 ---
@@ -110,6 +112,7 @@ dagster dev
 * Hiển thị lớp thời tiết, lượng mưa từ GEOGloWS.
 * Cho phép chọn khu vực và lớp bản đồ nền.
 * Dành cho người dùng muốn quan sát tổng thể.
+* Bảng thông tin thời tiết một tỉnh cụ thể trong vòng 5 ngày tới.
 
 ```bash
 cd flood_pipeline/streamlit_app
@@ -120,8 +123,9 @@ streamlit run app.py
 
 ### 2️⃣ `rain_yenbai.py` – **Cảnh báo ngập cho Yên Bái**
 
-* Hiển thị các ô vuông với mức độ nguy cơ ngập (`pred_flood_score`).
+* Giao diện bản đồ cảnh báo tỉnh Yên Bái.
 * Chọn ngưỡng hiển thị, hiển thị lớp địa hình, nước, cụm lũ.
+* Thông tin về các xã/thị trấn với 3 mức cảnh báo.
 * Dữ liệu đầu vào từ `yenbai_predictions_clean.csv`.
 
 ```bash

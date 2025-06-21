@@ -64,6 +64,7 @@ Pipeline được triển khai bằng Dagster gồm các `@asset` và `@job`:
 | `model.py`               | Mô hình học sâu                           |
 | `evaluation.py`          | Đánh giá mô hình                          |
 | `predict_yenbai.py`      | Dự đoán điểm ngập trên từng ô ở Yên Bái   |
+| `rain_yenbai.py`         | Lấy dữ liệu lượng mưa Yên Bái             |
 | `utils.py`               | Hàm phụ trợ dùng chung                    |
 
 ### 🧩 Các job (trong `jobs/`)

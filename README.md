@@ -1,6 +1,4 @@
-Dưới đây là phiên bản đầy đủ và **chuẩn hóa chuyên nghiệp** của file `README.md` cho dự án `flood_project`, được cập nhật dựa trên **cấu trúc cây bạn cung cấp**:
 
----
 
 ````markdown
 # 🌊 Flood Prediction Project - Yên Bái, Vietnam

@@ -1,6 +1,3 @@
-
-
-````markdown
 # 🌊 Flood Prediction Project - Yên Bái, Vietnam
 
 Dự án dự báo và cảnh báo ngập lụt tại tỉnh Yên Bái dựa trên dữ liệu khí tượng, địa hình, và thủy văn. Hệ thống bao gồm:

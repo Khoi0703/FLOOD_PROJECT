@@ -62,10 +62,12 @@ def predict_yenbai(training, yenbai_rain: pd.DataFrame) -> pd.DataFrame:
     # === In Top 10 vùng có độ ngập cao nhất ===
     top10 = df_original.copy()
     top10["pred_flood_score"] = df["pred_flood_score"]
-    top10_display = top10[[
-        "big_square_id" if "big_square_id" in top10.columns else None,
-        "square_center_lat", "square_center_lon", "pred_flood_score"
-    ]].dropna(axis=1).sort_values(by="pred_flood_score", ascending=False).head(10)
+    cols = ["square_center_lat", "square_center_lon", "pred_flood_score"]
+    if "big_square_id" in top10.columns:
+        cols.insert(0, "big_square_id")
+
+    top10_display = top10[cols].sort_values(by="pred_flood_score", ascending=False).head(10)
+
     print("🌊 Top 10 khu vực dự đoán có độ ngập cao nhất:")
     print(top10_display)
 

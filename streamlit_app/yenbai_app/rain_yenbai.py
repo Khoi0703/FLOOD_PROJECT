@@ -110,3 +110,69 @@ df_alert = pd.DataFrame(records)
 df_alert = df_alert.sort_values("Tổng độ ngập dự đoán", ascending=False)
 st.subheader("📋 Danh sách xã/thị trấn có nguy cơ ngập")
 st.dataframe(df_alert, use_container_width=True)
+
+
+st.subheader("🌧️ Cảnh báo theo lượng mưa (tổng 7 ngày)")
+
+# Tính tổng lượng mưa 7 ngày cho từng xã
+xa_rain_dict = {}
+for _, row in df.iterrows():
+    pt = Point(row["square_center_lon"], row["square_center_lat"])
+    for _, xa in gdf_xa.iterrows():
+        if xa.geometry.contains(pt):
+            name3 = xa["NAME_3"]
+            xa_rain_dict[name3] = xa_rain_dict.get(name3, 0) + row["rainfall_7d"]
+
+# Phân loại theo lượng mưa
+def classify_rain(rain):
+    if rain >= 350:
+        return "🔴 Rất lớn", "darkred"
+    elif rain >= 200:
+        return "🟠 Lớn", "orange"
+    elif rain >= 100:
+        return "🟡 Vừa", "yellow"
+    else:
+        return "🟢 Nhỏ", "lightgreen"
+
+# Tạo bản đồ mưa
+m_rain = folium.Map(location=center, zoom_start=9, tiles="CartoDB positron")
+folium.GeoJson(
+    gdf,
+    name="Yen Bai",
+    style_function=lambda x: {"fillColor": "#00000000", "color": "blue", "weight": 2}
+).add_to(m_rain)
+
+for _, row in gdf_xa.iterrows():
+    name3 = row["NAME_3"]
+    name_fmt = split_words(name3)
+    rain_sum = xa_rain_dict.get(name3, 0)
+    rain_level, color = classify_rain(rain_sum)
+    popup_text = f"{name_fmt}<br>Lượng mưa (7d): {rain_sum:.1f} mm ({rain_level})" if rain_sum > 0 else name_fmt
+    folium.GeoJson(
+        row["geometry"],
+        name=name_fmt,
+        style_function=lambda x, color=color: {
+            "fillColor": color,
+            "color": "black",
+            "weight": 0.5,
+            "fillOpacity": 0.7 if color != "#00000000" else 0
+        },
+        popup=folium.Popup(popup_text, max_width=250)
+    ).add_to(m_rain)
+
+# Tạo bảng dữ liệu lượng mưa
+records_rain = []
+for name3, rain_total in xa_rain_dict.items():
+    records_rain.append({
+        "Xã/Thị trấn": split_words(name3),
+        "Lượng mưa (7 ngày, mm)": round(rain_total, 2)
+    })
+df_rain = pd.DataFrame(records_rain).sort_values("Lượng mưa (7 ngày, mm)", ascending=False)
+
+# Hiển thị 2 cột: bản đồ | bảng
+col1, col2 = st.columns([1, 1])
+with col1:
+    st_folium(m_rain, width=700, height=600)
+
+with col2:
+    st.dataframe(df_rain, use_container_width=True)

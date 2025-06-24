@@ -1,8 +1,3 @@
-Dưới đây là phiên bản đầy đủ và **chuẩn hóa chuyên nghiệp** của file `README.md` cho dự án `flood_project`, được cập nhật dựa trên **cấu trúc cây bạn cung cấp**:
-
----
-
-````markdown
 # 🌊 Flood Prediction Project - Yên Bái, Vietnam
 
 Dự án dự báo và cảnh báo ngập lụt tại tỉnh Yên Bái dựa trên dữ liệu khí tượng, địa hình, và thủy văn. Hệ thống bao gồm:
@@ -69,6 +64,7 @@ Pipeline được triển khai bằng Dagster gồm các `@asset` và `@job`:
 | `model.py`               | Mô hình học sâu                           |
 | `evaluation.py`          | Đánh giá mô hình                          |
 | `predict_yenbai.py`      | Dự đoán điểm ngập trên từng ô ở Yên Bái   |
+| `rain_yenbai.py`         | Lấy dữ liệu lượng mưa Yên Bái             |
 | `utils.py`               | Hàm phụ trợ dùng chung                    |
 
 ### 🧩 Các job (trong `jobs/`)
@@ -103,6 +99,8 @@ dagster dev
 
 * `best_cnn_gnn_model.pth`: Mô hình đã huấn luyện
 * `yenbai_predictions_clean.csv`: Dự đoán điểm ngập
+* `yenbai_rainfall.csv`: Dữ liệu lượng mưa tỉnh Yên Bái.
+* `yenbai_final.csv`: Dữ liệu thông tin địa lý tỉnh Yên Bái.
 * `water_clusters.csv`: Cụm vùng có nước
 
 ---
@@ -114,6 +112,7 @@ dagster dev
 * Hiển thị lớp thời tiết, lượng mưa từ GEOGloWS.
 * Cho phép chọn khu vực và lớp bản đồ nền.
 * Dành cho người dùng muốn quan sát tổng thể.
+* Bảng thông tin thời tiết một tỉnh cụ thể trong vòng 5 ngày tới.
 
 ```bash
 cd flood_pipeline/streamlit_app
@@ -124,8 +123,9 @@ streamlit run app.py
 
 ### 2️⃣ `rain_yenbai.py` – **Cảnh báo ngập cho Yên Bái**
 
-* Hiển thị các ô vuông với mức độ nguy cơ ngập (`pred_flood_score`).
+* Giao diện bản đồ cảnh báo tỉnh Yên Bái.
 * Chọn ngưỡng hiển thị, hiển thị lớp địa hình, nước, cụm lũ.
+* Thông tin về các xã/thị trấn với 3 mức cảnh báo.
 * Dữ liệu đầu vào từ `yenbai_predictions_clean.csv`.
 
 ```bash

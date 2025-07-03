@@ -15,7 +15,7 @@ def water_cluster(context) -> pd.DataFrame:
         ee.Initialize(project='ee-nguyendangkhoi9517')
 
     # 2. Read combined flood event data
-    input_path = "data/intermediate/combined_flood_event_data.csv"
+    input_path = "data/intermediate/data_merge.csv"
     if not os.path.exists(input_path):
         context.log.warning("⚠️ Không tìm thấy file combined_flood_event_data.csv.")
         return pd.DataFrame()

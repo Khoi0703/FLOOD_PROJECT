@@ -90,7 +90,9 @@ def water_cluster(context) -> pd.DataFrame:
 
     # Đảm bảo giữ đủ các cột yêu cầu
     keep_cols = [
+        "event_index",
         "event_square_id",
+        "started_date",
         "ended_date",
         "square_index",
         "square_center_lat",

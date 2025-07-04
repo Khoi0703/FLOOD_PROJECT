@@ -25,20 +25,21 @@ def predict_yenbai(training, yenbai_rain: pd.DataFrame) -> pd.DataFrame:
     df["height_values"] = df["height_values"].apply(lambda s: parse_list_string_to_2d_array(s, 40, 40))
     df["flood_values"] = df["flood_values"].apply(lambda s: parse_list_string_to_2d_array(s, 40, 40))
 
-    # === Dùng đúng scalar features như lúc training ===
-    required_features = [
+    # === Dùng đúng scalar features và scaler như lúc training ===
+    required_features = training.get("scalar_features", [
         "square_center_lat", "square_center_lon",
         "rainfall_3d", "rainfall_7d", "rainfall_1m",
         "permanent_water", "water_presence"
-    ]
-    for col in required_features:
-        if col not in df.columns:
-            raise ValueError(f"❌ Thiếu cột '{col}' trong yenbai_final.csv")
+    ])  # Bắt buộc phải có, không fallback mặc định!
+    missing = [col for col in required_features if col not in df.columns]
+    if missing:
+        print(f"[WARNING] Các cột sau bị thiếu trong yenbai_final.csv, sẽ điền 0: {missing}")
+        for col in missing:
+            df[col] = 0.0
 
-    # Chuẩn hóa scalar features để đưa vào model (KHÔNG ghi ra file)
-    scaler = StandardScaler()
-    df_scaled = df[required_features].copy()
-    df_scaled = scaler.fit_transform(df_scaled)
+    # Dùng lại scaler đã fit từ training, không fit lại!
+    scaler = training["scaler"]
+    df_scaled = scaler.transform(df[required_features])
     scalar_tensor = torch.tensor(df_scaled, dtype=torch.float32)
 
     # Xử lý height_values
@@ -54,10 +55,13 @@ def predict_yenbai(training, yenbai_rain: pd.DataFrame) -> pd.DataFrame:
         pred_np = pred.cpu().numpy().reshape(-1, 40, 40)
         df["pred_flood_values"] = [pred_np[i].tolist() for i in range(num_nodes)]
 
-    # === Tính tổng độ ngập (dùng ReLU để tránh âm) ===
-    df["pred_flood_score"] = df["pred_flood_values"].apply(
-        lambda arr: np.clip(np.array(arr), 0, None).sum()
-    )
+    # === Tính tổng độ ngập (mean các giá trị > 0) ===
+    def mean_nonzero(arr):
+        arr = np.array(arr)
+        arr = arr[arr > 0]
+        return arr.mean() if arr.size > 0 else 0.0
+
+    df["pred_flood_score"] = df["pred_flood_values"].apply(mean_nonzero)
 
     # === In Top 10 vùng có độ ngập cao nhất ===
     top10 = df_original.copy()

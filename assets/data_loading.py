@@ -21,9 +21,9 @@ def parse_list_string_to_2d_array(s, img_height, img_width):
     except (ValueError, SyntaxError): return np.zeros((img_height, img_width), dtype=np.float32)
 
 @asset
-def data_loading(context, water_cluster: pd.DataFrame = None) -> dict:
+def data_loading(context) -> dict:
     """
-    Asset Dagster: Tiền xử lý dữ liệu từ water_cluster DataFrame hoặc tạo dummy nếu không có.
+    Asset Dagster: Tiền xử lý dữ liệu từ file CSV hoặc tạo dummy nếu không có.
     """
     img_height, img_width = 40, 40
     fill_water_cluster = -1
@@ -33,16 +33,17 @@ def data_loading(context, water_cluster: pd.DataFrame = None) -> dict:
         'permanent_water', 'water_presence'
     ]
 
-    # Nếu không có csv hoặc water_cluster là None hoặc rỗng, tạo dummy data
-    if water_cluster is None or len(water_cluster) == 0:
-        context.log.warning("No input DataFrame provided. Using dummy data.")
-        df = create_dummy_data(img_height, img_width, num_events=5, squares_per_event_range=(10, 20), num_water_clusters=8)
-        print("DataFrame head (dummy):")
+    # Luôn đọc water_cluster từ file CSV
+    try:
+        df = pd.read_csv("data/final/water_clusters.csv")
+        context.log.info("Loaded water_cluster from CSV.")
+        print("DataFrame head (from CSV):")
         print(df.head())
         print(f"\nDataFrame shape: {df.shape}")
-    else:
-        df = water_cluster.copy()
-        print("DataFrame head (loaded):")
+    except Exception as e:
+        context.log.warning(f"Could not load water_cluster from CSV. Using dummy data. Error: {e}")
+        df = create_dummy_data(img_height, img_width, num_events=5, squares_per_event_range=(10, 20), num_water_clusters=8)
+        print("DataFrame head (dummy):")
         print(df.head())
         print(f"\nDataFrame shape: {df.shape}")
 

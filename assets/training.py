@@ -101,6 +101,21 @@ def training(model, preprocessing) -> dict:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
+    # Debug: print available keys in preprocessing
+    print("[DEBUG] preprocessing keys:", list(preprocessing.keys()))
+
+    # Lấy scalar features và scaler từ preprocessing (giả sử preprocessing đã trả về)
+    scalar_features = preprocessing.get("scalar_features", None)
+    scaler = preprocessing.get("scaler", None)
+    if scalar_features is None or scaler is None:
+        raise KeyError(
+            f"Missing keys in preprocessing: "
+            f"{'scalar_features' if scalar_features is None else ''} "
+            f"{'scaler' if scaler is None else ''}. "
+            f"Available keys: {list(preprocessing.keys())}. "
+            "Check the output of the preprocessing asset."
+        )
+
     # Chuẩn bị data object (dùng dict thay vì class để tránh lỗi pickle)
     data_obj = {
         "x_spatial": preprocessing["height_spatial_tensor"],
@@ -128,9 +143,11 @@ def training(model, preprocessing) -> dict:
         model, data_obj, device,
         num_epochs=50, patience_epochs=10, lr=0.001, weight_decay=5e-4
     )
-    return {
+    result = {
         "model": model,
-        # Không có history trả về từ simple_train_loop, nếu cần hãy sửa lại hàm để trả về history
-        "data_obj": data_obj,
-        "device": device
+        "scaler": scaler,  # scaler đã fit
+        "scalar_features": scalar_features,  # danh sách tên cột
+        "device": device,
+        "data_obj": data_obj,  # <-- ensure this is present and is the processed tensor dict
     }
+    return result

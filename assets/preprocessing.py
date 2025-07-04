@@ -195,6 +195,8 @@ def preprocess_flood_dataframe(
         "edge_index": edge_index,
         "id_to_node_idx": id_to_node_idx,
         "available_scalar_features": available_scalar_features,
+        "scalar_features": available_scalar_features,
+        "scaler": scaler if 'scaler' in locals() else None,
         "train_mask": train_mask,
         "val_mask": val_mask,
         "test_mask": test_mask,

@@ -9,11 +9,11 @@ import re
 
 # === Hàm phân loại mức độ cảnh báo và màu ===
 def classify_alert(score):
-    if score >= 7:
+    if score >= 2:
         return "🔴 Nặng", "darkred"
-    elif score >= 5:
+    elif score >= 1:
         return "🟠 Trung bình", "orange"
-    elif score >= 2:
+    elif score >= 0.5:
         return "🟡 Nhẹ", "yellow"
     else:
         return "🟢 Dưới ngưỡng", "lightgreen"
@@ -125,11 +125,11 @@ for _, row in df.iterrows():
 
 # Phân loại theo lượng mưa
 def classify_rain(rain):
-    if rain >= 350:
+    if rain >= 50:
         return "🔴 Rất lớn", "darkred"
-    elif rain >= 200:
+    elif rain >= 40:
         return "🟠 Lớn", "orange"
-    elif rain >= 100:
+    elif rain >= 20:
         return "🟡 Vừa", "yellow"
     else:
         return "🟢 Nhỏ", "lightgreen"

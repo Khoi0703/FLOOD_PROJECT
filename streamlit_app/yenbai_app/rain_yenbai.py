@@ -9,11 +9,11 @@ import re
 
 # === Hàm phân loại mức độ cảnh báo và màu ===
 def classify_alert(score):
-    if score >= 150:
+    if score >= 7:
         return "🔴 Nặng", "darkred"
-    elif score >= 70:
+    elif score >= 5:
         return "🟠 Trung bình", "orange"
-    elif score >= 50:
+    elif score >= 2:
         return "🟡 Nhẹ", "yellow"
     else:
         return "🟢 Dưới ngưỡng", "lightgreen"

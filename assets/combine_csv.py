@@ -4,7 +4,7 @@ import glob
 
 @asset
 def combine_csv(context, fetch_flood_data: pd.DataFrame) -> pd.DataFrame:
-    input_files = glob.glob("data/intermediate/data_*.csv")
+    input_files = glob.glob("data/intermediate/event_data/data_*.csv")
     if not input_files:
         context.log.warning("⚠️ Không tìm thấy file để combine.")
         return pd.DataFrame()

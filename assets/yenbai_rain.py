@@ -45,8 +45,8 @@ def get_avg_precip_gpm_v07(lat, lon, end_date, days):
 # ==== ASSET DAGSTER ====
 @asset
 def yenbai_rain() -> Output[pd.DataFrame]:
-    input_path = "data/final/yenbai_final.csv"
-    output_path = "data/final/yenbai_rainfall.csv"
+    input_path = "data/intermediate/yenbai_final.csv"
+    output_path = "data/intermediate/yenbai_rainfall.csv"
 
     today_utc = datetime.utcnow()
     print(f"\n📆 Lấy lượng mưa đến ngày: {today_utc.strftime('%Y-%m-%d')} (UTC)\n")

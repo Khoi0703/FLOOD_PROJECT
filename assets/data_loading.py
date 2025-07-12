@@ -35,7 +35,7 @@ def data_loading(context) -> dict:
 
     # Luôn đọc water_cluster từ file CSV
     try:
-        df = pd.read_csv("data/final/water_clusters.csv")
+        df = pd.read_csv("data/intermediate/water_clusters.csv")
         context.log.info("Loaded water_cluster from CSV.")
         print("DataFrame head (from CSV):")
         print(df.head())

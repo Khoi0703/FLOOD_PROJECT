@@ -5,8 +5,8 @@ import os
 from dagster import asset, Output
 
 @asset
-def fetch_flood_data(context, run_dbscan_clustering: pd.DataFrame) -> Output[None]:
-    context.log.info(f"📥 Nhận {len(run_dbscan_clustering)} sự kiện đã cluster từ DBSCAN.")
+def fetch_flood_data(context, run_similar: pd.DataFrame) -> Output[None]:
+    context.log.info(f"📥 Nhận {len(run_similar)} sự kiện")
 
     # Khởi tạo Earth Engine
     try:
@@ -15,8 +15,8 @@ def fetch_flood_data(context, run_dbscan_clustering: pd.DataFrame) -> Output[Non
         context.log.warning("⚠️ Earth Engine đã được khởi tạo trước hoặc lỗi nhỏ: " + str(e))
 
     # Dữ liệu input
-    df = run_dbscan_clustering.copy()
-    pending_path = "data/intermediate/flood_events_nearby_clusters_pending.csv"
+    df = run_similar.copy()
+    pending_path = '/data/intermediate/similar_to_yenbai.csv'
 
     # Nếu file pending tồn tại, chỉ xử lý các event còn lại trong file này
     if os.path.exists(pending_path):
@@ -116,7 +116,7 @@ def fetch_flood_data(context, run_dbscan_clustering: pd.DataFrame) -> Output[Non
         event_df = pd.DataFrame(event_results)
         event_index = row["event_index"]
 
-        output_path = f"data/intermediate/data_{event_index}.csv"
+        output_path = f"data/intermediate/event_data/data_{event_index}.csv"
         event_df.to_csv(output_path, index=False)
         context.log.info(f"✅ Lưu kết quả: {output_path}")
 
@@ -126,7 +126,7 @@ def fetch_flood_data(context, run_dbscan_clustering: pd.DataFrame) -> Output[Non
         context.log.info(f"🧹 Đã loại bỏ event {event_index}. Còn lại: {len(df)}")
 
         # Xóa event khỏi file gốc dbscan_clustering
-        original_path = "data/intermediate/flood_events_nearby_clusters.csv"
+        original_path = '/data/intermediate/similar_to_yenbai.csv'
         if os.path.exists(original_path):
             original_df = pd.read_csv(original_path)
             original_df = original_df[original_df["event_index"] != event_index]

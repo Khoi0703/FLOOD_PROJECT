@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from tqdm import tqdm
 
-# --- Simple Training Loop (not Dagster asset) ---
+# Vòng lặp huấn luyện đơn giản với early stopping
 def simple_train_loop(model, graph_data, device, num_epochs=50, patience_epochs=10, lr=0.001, weight_decay=5e-4):
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     criterion = nn.MSELoss()
@@ -84,7 +84,6 @@ def simple_train_loop(model, graph_data, device, num_epochs=50, patience_epochs=
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             patience_counter = 0
-            # torch.save(model.state_dict(), 'best_cnn_gnn_model.pth')
         else:
             patience_counter += 1
             if patience_counter >= patience_epochs:
@@ -101,7 +100,7 @@ def training(model, preprocessing) -> dict:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    # Debug: print available keys in preprocessing
+    # Debug: kiểm tra keys trong preprocessing
     print("[DEBUG] preprocessing keys:", list(preprocessing.keys()))
 
     # Lấy scalar features và scaler từ preprocessing (giả sử preprocessing đã trả về)
@@ -127,7 +126,7 @@ def training(model, preprocessing) -> dict:
         "test_mask": preprocessing["test_mask"],
     }
 
-    # --- Add shape assertion for debugging ---
+    # Debug: kiểm tra shapes
     num_nodes = data_obj["x_spatial"].shape[0]
     assert data_obj["train_mask"].shape[0] == num_nodes, (
         f"train_mask shape {data_obj['train_mask'].shape} does not match number of nodes {num_nodes}. "
@@ -148,6 +147,6 @@ def training(model, preprocessing) -> dict:
         "scaler": scaler,  # scaler đã fit
         "scalar_features": scalar_features,  # danh sách tên cột
         "device": device,
-        "data_obj": data_obj,  # <-- ensure this is present and is the processed tensor dict
+        "data_obj": data_obj, # chứa dữ liệu đã chuẩn bị
     }
     return result

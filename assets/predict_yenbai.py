@@ -12,7 +12,7 @@ def predict_yenbai(training, yenbai_rain: pd.DataFrame) -> pd.DataFrame:
     model.eval()
 
     # === Load dữ liệu mới để predict ===
-    df = pd.read_csv("data/final/yenbai_rainfall.csv")
+    df = pd.read_csv("data/intermediate/yenbai_rainfall.csv")
 
     # Backup bản gốc chưa chuẩn hóa để xuất CSV
     df_original = df.copy()

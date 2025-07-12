@@ -110,7 +110,7 @@ def water_cluster(context) -> pd.DataFrame:
     df = df[[col for col in keep_cols if col in df.columns]]
 
     # 10. Save final results
-    output_path = "data/final/water_clusters.csv"
+    output_path = "data/intermediate/water_clusters.csv"
     df.to_csv(output_path, index=False, encoding="utf-8")
     context.log.info(f"✅ Đã lưu cụm điểm với khóa event_square_id tại: {output_path}")
     return df

@@ -1,6 +1,6 @@
 from dagster import Definitions
 
-from assets.dbscan_clustering import run_dbscan_clustering
+from assets.run_similar import run_similar
 from assets.ggee_get_flood_data import fetch_flood_data
 from assets.combine_csv import combine_csv
 from assets.water_cluster import water_cluster
@@ -16,7 +16,7 @@ from jobs.model_job import model_job
 from jobs.data_job import data_job
 defs = Definitions(
     assets=[
-        run_dbscan_clustering,
+        run_similar,
         fetch_flood_data,
         combine_csv,
         water_cluster,

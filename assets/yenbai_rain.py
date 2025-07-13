@@ -27,7 +27,7 @@ def get_avg_precip_gpm_v07(lat, lon, end_date, days):
         )
         val = mean.getInfo().get("precipitationCal", None)
         if val is None:
-            raise ValueError("precipitationCal null")
+            raise ValueError("precipitationCal is null")
         return val
     except:
         try:
@@ -45,6 +45,8 @@ def get_avg_precip_gpm_v07(lat, lon, end_date, days):
 # ==== DAGSTER ASSET ====
 @asset
 def yenbai_rain() -> Output[pd.DataFrame]:
+    print("✅ Loaded latest version of rainfall_features.py")
+
     input_path = "data/intermediate/yenbai_final.csv"
     output_path = "data/intermediate/yenbai_rainfall.csv"
 
@@ -64,11 +66,11 @@ def yenbai_rain() -> Output[pd.DataFrame]:
             rain7 = get_avg_precip_gpm_v07(lat, lon, today_utc, 7)
             rain30 = get_avg_precip_gpm_v07(lat, lon, today_utc, 30)
 
-            print(f"🟢 ID {square_id} | 3d: {rain3:.2f} mm | 7d: {rain7:.2f} mm | 30d: {rain30:.2f} mm")
+            avg_rain_3.append(rain3 / 3)
+            avg_rain_7.append(rain7 / 7)
+            avg_rain_30.append(rain30 / 30)
 
-            avg_rain_3.append(rain3)
-            avg_rain_7.append(rain7)
-            avg_rain_30.append(rain30)
+            print(f"🟢 ID {square_id:<8} | Avg Rain (mm): 3d = {rain3 / 3:.2f}, 7d = {rain7 / 7:.2f}, 30d = {rain30 / 30:.2f}")
 
         except Exception as e:
             print(f"❌ Error at ID {square_id}: {e}")

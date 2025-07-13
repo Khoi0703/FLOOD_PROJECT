@@ -23,7 +23,7 @@ def parse_list_string_to_2d_array(s, img_height, img_width):
 @asset
 def data_loading(context) -> dict:
     """
-    Asset Dagster: Tiền xử lý dữ liệu từ file CSV hoặc tạo dummy nếu không có.
+    Dagster Asset: Preprocess data from CSV file or create dummy data if not available.
     """
     img_height, img_width = 40, 40
     fill_water_cluster = -1
@@ -33,7 +33,7 @@ def data_loading(context) -> dict:
         'permanent_water', 'water_presence'
     ]
 
-    # Luôn đọc water_cluster từ file CSV
+    # Always read water_cluster from CSV file
     try:
         df = pd.read_csv("data/intermediate/water_clusters.csv")
         context.log.info("Loaded water_cluster from CSV.")

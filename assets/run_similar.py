@@ -6,6 +6,7 @@ import ee
 ee.Initialize(project='ee-nguyendangkhoi9517')
 
 def get_avg_elevation_and_rainfall(lat, lon, area_km2, year):
+    # Calculate average elevation and rainfall for a given location, area, and year
     point = ee.Geometry.Point([lon, lat])
     radius_m = (math.sqrt(area_km2) / 2) * 1000
     buffer = point.buffer(radius_m)
@@ -59,27 +60,27 @@ def run_similar(context) -> pd.DataFrame:
             ).getInfo()
 
             results.append({
-                'index': row['index'],  # để merge ngược lại với df_raw
+                'index': row['index'],  # to merge back with df_raw
                 'elevation': stats['elevation'],
                 'rainfall': stats['rainfall']
             })
         except Exception as e:
-            context.log.warn(f"Lỗi dòng {row['index']}: {e}")
+            context.log.warn(f"Error at row {row['index']}: {e}")
 
     df_stats = pd.DataFrame(results)
 
-    # Gộp elevation + rainfall vào lại df_raw
+    # Merge elevation + rainfall back into df_raw
     df_full = df_raw.reset_index().merge(df_stats, on='index', how='inner').drop(columns='index')
 
-    # Lọc theo điều kiện giống Yên Bái
+    # Filter by conditions similar to Yen Bai
     df_similar = df_full[
         (df_full['elevation'] >= 300) & (df_full['elevation'] <= 700) &
         (df_full['rainfall'] >= 1400) & (df_full['rainfall'] <= 2000)
     ]
 
-    # Ghi ra file
+    # Write to file
     output_path = '/data/intermediate/similar_to_yenbai.csv'
     df_similar.to_csv(output_path, index=False)
 
-    context.log.info(f"Lưu {len(df_similar)} dòng giống Yên Bái vào: {output_path}")
+    context.log.info(f"Saved {len(df_similar)} rows similar to Yen Bai to: {output_path}")
     return df_similar

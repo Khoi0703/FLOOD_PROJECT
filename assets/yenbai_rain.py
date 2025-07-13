@@ -5,10 +5,10 @@ import pandas as pd
 from datetime import datetime, timedelta
 from dagster import asset, Output
 
-# ==== KHỞI TẠO GEE ====
+# ==== INITIALIZE GEE ====
 ee.Initialize(project='ee-nguyendangkhoi9517')
 
-# ==== HÀM LẤY LƯỢNG MƯA VỚI GPM V07 ====
+# ==== FUNCTION TO GET PRECIPITATION WITH GPM V07 ====
 def get_avg_precip_gpm_v07(lat, lon, end_date, days):
     start = end_date - timedelta(days=days)
     geom = ee.Geometry.Point([lon, lat]).buffer(10000)
@@ -42,14 +42,14 @@ def get_avg_precip_gpm_v07(lat, lon, end_date, days):
         except:
             return 0
 
-# ==== ASSET DAGSTER ====
+# ==== DAGSTER ASSET ====
 @asset
 def yenbai_rain() -> Output[pd.DataFrame]:
     input_path = "data/intermediate/yenbai_final.csv"
     output_path = "data/intermediate/yenbai_rainfall.csv"
 
     today_utc = datetime.utcnow()
-    print(f"\n📆 Lấy lượng mưa đến ngày: {today_utc.strftime('%Y-%m-%d')} (UTC)\n")
+    print(f"\n📆 Getting rainfall up to: {today_utc.strftime('%Y-%m-%d')} (UTC)\n")
 
     df = pd.read_csv(input_path)
     avg_rain_3, avg_rain_7, avg_rain_30 = [], [], []
@@ -71,7 +71,7 @@ def yenbai_rain() -> Output[pd.DataFrame]:
             avg_rain_30.append(rain30)
 
         except Exception as e:
-            print(f"❌ Lỗi tại ID {square_id}: {e}")
+            print(f"❌ Error at ID {square_id}: {e}")
             avg_rain_3.append(None)
             avg_rain_7.append(None)
             avg_rain_30.append(None)
@@ -81,6 +81,6 @@ def yenbai_rain() -> Output[pd.DataFrame]:
     df['rainfall_1m'] = avg_rain_30
 
     df.to_csv(output_path, index=False)
-    print(f"\n✅ Đã lưu kết quả vào: {output_path}")
+    print(f"\n✅ Saved results to: {output_path}")
 
     return Output(value=df)

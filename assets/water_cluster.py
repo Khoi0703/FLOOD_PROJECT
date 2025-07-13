@@ -88,7 +88,7 @@ def water_cluster(context) -> pd.DataFrame:
     df = df.merge(merge_cols, on="event_square_id", how="left")
     df.drop(columns=["geometry", "buffer"], errors="ignore", inplace=True)
 
-    # Đảm bảo giữ đủ các cột yêu cầu
+    # Ensure all required columns are kept
     keep_cols = [
         "event_index",
         "event_square_id",
@@ -106,11 +106,11 @@ def water_cluster(context) -> pd.DataFrame:
         "water_presence",
         "water_cluster"
     ]
-    # Chỉ giữ lại các cột có trong DataFrame (tránh lỗi nếu thiếu cột)
+    # Only keep columns that exist in the DataFrame (avoid errors if missing columns)
     df = df[[col for col in keep_cols if col in df.columns]]
 
-    # 10. Save final results
+    # Save final results
     output_path = "data/intermediate/water_clusters.csv"
     df.to_csv(output_path, index=False, encoding="utf-8")
-    context.log.info(f"✅ Đã lưu cụm điểm với khóa event_square_id tại: {output_path}")
+    context.log.info(f"✅ Saved clusters with event_square_id key at: {output_path}")
     return df

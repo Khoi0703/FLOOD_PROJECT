@@ -1,142 +1,122 @@
-# 🌊 Flood Prediction Project - Yên Bái, Vietnam
+# 🌊 Flood Prediction Project - Yen Bai, Vietnam
 
-Dự án dự báo và cảnh báo ngập lụt tại tỉnh Yên Bái dựa trên dữ liệu khí tượng, địa hình, và thủy văn. Hệ thống bao gồm:
+This project aims to forecast and warn about flooding in Yen Bai province using meteorological, topographical, and hydrological data. The system includes:
 
-- ✅ Pipeline Dagster: xử lý, gom cụm, huấn luyện và dự đoán.
-- 🧠 Mô hình học sâu GNN-CNN-LSTM.
-- 🌐 Ứng dụng Streamlit trực quan hóa dữ liệu mưa toàn quốc và cảnh báo ngập ở Yên Bái.
-
----
-
-## 📂 Cấu trúc thư mục
-
-```bash
-flood_project/
-│
-├── README.md                  # Tài liệu này
-├── requirements.txt           # Thư viện Python cần thiết
-│
-└── flood_pipeline/
-    ├── flood_pipeline.py      # Entry point pipeline Dagster
-    ├── workspace.yaml         # Cấu hình workspace Dagster
-    │
-    ├── assets/                # Các bước chính (asset) trong pipeline
-    ├── jobs/                  # Các job chạy pipeline (data, model)
-    ├── data/                  # Dữ liệu (raw, intermediate, final)
-    └── streamlit_app/         # Giao diện người dùng
-````
+- ✅ Dagster pipeline: data processing, clustering, training, and prediction.
+- 🧠 Deep learning model: GNN-CNN-LSTM.
+- 🌐 Streamlit application for visualizing rainfall data nationwide and flood warnings in Yen Bai.
 
 ---
 
-## ⚙️ Cài đặt
+## ⚙️ Installation
 
 ```bash
-# 1. Clone dự án
+# 1. Clone the project
 git clone https://github.com/your-username/flood_project.git
 cd flood_project
 
-# 2. Tạo môi trường ảo (tuỳ chọn)
+# 2. Create a virtual environment (optional)
 python -m venv venv
-venv\Scripts\activate           # Trên Windows
-source venv/bin/activate       # Trên macOS/Linux
+venv\Scripts\activate           # On Windows
+source venv/bin/activate        # On macOS/Linux
 
-# 3. Cài thư viện
+# 3. Install dependencies
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🔁 Pipeline xử lý dữ liệu (Dagster)
+## 🔁 Data Processing Pipeline (Dagster)
 
-Pipeline được triển khai bằng Dagster gồm các `@asset` và `@job`:
+The pipeline is implemented using Dagster with `@asset` and `@job`:
 
-### 📦 Các asset chính (trong `assets/`)
+### 📦 Main assets (in `assets/`)
 
-| Tên asset                | Mô tả                                     |
-| ------------------------ | ----------------------------------------- |
-| `ggee_get_flood_data.py` | Lấy dữ liệu mưa từ GEOGloWS, Earth Engine |
-| `data_loading.py`        | Load và chuẩn hóa dữ liệu đầu vào         |
-| `preprocessing.py`       | Chuẩn hóa, tạo tensors GNN/CNN            |
-| `combine_csv.py`         | Gộp dữ liệu các đợt lũ                    |
-| `dbscan_clustering.py`   | Gom cụm lũ bằng DBSCAN                    |
-| `water_cluster.py`       | Phân cụm vùng có nước lâu dài             |
-| `training.py`            | Huấn luyện mô hình GNN-CNN-LSTM           |
-| `model.py`               | Mô hình học sâu                           |
-| `evaluation.py`          | Đánh giá mô hình                          |
-| `predict_yenbai.py`      | Dự đoán điểm ngập trên từng ô ở Yên Bái   |
-| `rain_yenbai.py`         | Lấy dữ liệu lượng mưa Yên Bái             |
-| `utils.py`               | Hàm phụ trợ dùng chung                    |
+| Asset name                | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| `ggee_get_flood_data.py`  | Fetch rainfall data from GEOGloWS, Earth Engine  |
+| `data_loading.py`         | Load and normalize input data                    |
+| `preprocessing.py`        | Normalize and create GNN/CNN tensors             |
+| `combine_csv.py`          | Combine data from flood events                   |
+| `dbscan_clustering.py`    | Cluster floods using DBSCAN                      |
+| `water_cluster.py`        | Cluster regions with permanent water             |
+| `training.py`             | Train the GNN-CNN-LSTM model                     |
+| `model.py`                | Deep learning model definition                   |
+| `evaluation.py`           | Model evaluation                                 |
+| `predict_yenbai.py`       | Predict flood points in Yen Bai                  |
+| `rain_yenbai.py`          | Fetch rainfall data for Yen Bai                  |
+| `utils.py`                | Shared utility functions                         |
 
-### 🧩 Các job (trong `jobs/`)
+### 🧩 Jobs (in `jobs/`)
 
-| Job            | Mục đích                            |
-| -------------- | ----------------------------------- |
-| `data_job.py`  | Chạy toàn bộ pipeline xử lý dữ liệu |
-| `model_job.py` | Chạy huấn luyện và dự đoán mô hình  |
+| Job            | Purpose                                 |
+| -------------- | --------------------------------------- |
+| `data_job.py`  | Run the entire data processing pipeline |
+| `model_job.py` | Run model training and prediction       |
 
-Chạy Dagster UI:
+To launch the Dagster UI:
 
 ```bash
 cd flood_pipeline
 dagster dev
-# Truy cập: http://localhost:3000
+# Access: http://localhost:3000
 ```
 
 ---
 
-## 📊 Dữ liệu
+## 📊 Data
 
 ### `data/raw/`
 
-* `flood_data.csv`: Dữ liệu ngập gốc
-* `diaphantinh.geojson`: Biên giới hành chính
+* `flood_data.csv`: Original flood data
+* `diaphantinh.geojson`: Administrative boundaries
 
 ### `data/intermediate/`
 
-* Các file `.csv` là các đợt lũ riêng biệt và kết quả gom cụm
+* `.csv` files for individual flood events and clustering results
+* `yenbai_rainfall.csv`: Rainfall data for Yen Bai
+* `yenbai_final.csv`: Geographic information for Yen Bai
+* `water_clusters.csv`: Water region clusters
 
 ### `data/final/`
 
-* `best_cnn_gnn_model.pth`: Mô hình đã huấn luyện
-* `yenbai_predictions_clean.csv`: Dự đoán điểm ngập
-* `yenbai_rainfall.csv`: Dữ liệu lượng mưa tỉnh Yên Bái.
-* `yenbai_final.csv`: Dữ liệu thông tin địa lý tỉnh Yên Bái.
-* `water_clusters.csv`: Cụm vùng có nước
+* `best_cnn_gnn_model.pth`: Trained model
+* `yenbai_predictions_clean.csv`: Flood prediction results
 
 ---
 
-## 🌐 Ứng dụng Streamlit
+## 🌐 Streamlit Application
 
-### 1️⃣ `app.py` – **Bản đồ mưa toàn quốc**
+### 1️⃣ `app.py` – **Nationwide Rainfall Map**
 
-* Hiển thị lớp thời tiết, lượng mưa từ GEOGloWS.
-* Cho phép chọn khu vực và lớp bản đồ nền.
-* Dành cho người dùng muốn quan sát tổng thể.
-* Bảng thông tin thời tiết một tỉnh cụ thể trong vòng 5 ngày tới.
+* Displays weather layers and rainfall from GEOGloWS.
+* Allows selection of area and map base layer.
+* For users to observe overall weather.
+* Weather information table for a specific province for the next 5 days.
 
 ```bash
-cd flood_pipeline/streamlit_app
+cd flood_pipeline/APP/vn_web
 streamlit run app.py
 ```
 
 ---
 
-### 2️⃣ `rain_yenbai.py` – **Cảnh báo ngập cho Yên Bái**
+### 2️⃣ `rain_yenbai.py` – **Flood Warning for Yen Bai**
 
-* Giao diện bản đồ cảnh báo tỉnh Yên Bái.
-* Chọn ngưỡng hiển thị, hiển thị lớp địa hình, nước, cụm lũ.
-* Thông tin về các xã/thị trấn với 3 mức cảnh báo.
-* Dữ liệu đầu vào từ `yenbai_predictions_clean.csv`.
+* Map interface for flood warnings in Yen Bai.
+* Select threshold, display terrain, water, and flood clusters.
+* Information about communes/towns with 3 warning levels.
+* Input data from `yenbai_predictions_clean.csv`.
 
 ```bash
-cd flood_pipeline/streamlit_app/yenbai_app
+cd flood_pipeline/APP/yenbai_app
 streamlit run rain_yenbai.py
 ```
 
 ---
 
-## 📌 Tác giả
+## 📌 Author
 
-**Nguyễn Đăng Khôi**
+**Nguyen Dang Khoi**
 
 

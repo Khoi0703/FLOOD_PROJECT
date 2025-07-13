@@ -11,6 +11,7 @@ IMG_HEIGHT = 40
 IMG_WIDTH = 40
 
 def parse_list_string_to_2d_array(s, IMG_HEIGHT=IMG_HEIGHT, IMG_WIDTH=IMG_WIDTH):
+    # Parse a string or list into a 2D numpy array of shape (IMG_HEIGHT, IMG_WIDTH)
     flat_list_len = IMG_HEIGHT * IMG_WIDTH
     if isinstance(s, (list, np.ndarray)):
         arr = np.array(s, dtype=np.float32)
@@ -41,7 +42,7 @@ def preprocess_flood_dataframe(
     print(f"flood_values shape example: {df['flood_values'].iloc[0].shape}")
 
     # --- Feature Engineering ---
-    # Event duration
+    # Calculate event duration
     print("Calculating event_duration_days...")
     if 'began_date' in df.columns and 'ended_date' in df.columns:
         try:
@@ -53,7 +54,7 @@ def preprocess_flood_dataframe(
             print(f"Warning: Could not process dates for event_duration_days. Error: {e}. Creating with zeros.")
             df['event_duration_days'] = 0.0
 
-    # Handle missing values
+    # Handle missing values for water_presence and water_cluster
     print("Filling missing values for water_presence and water_cluster...")
     df['water_presence'] = df['water_presence'].fillna(0.0)
     if 'water_cluster' in df.columns:
@@ -109,7 +110,7 @@ def preprocess_flood_dataframe(
     # Sort df to match unique_ids order
     df = df.set_index('event_square_id').loc[unique_ids].reset_index()
 
-    # --- FIX: Only use deduplicated/sorted df for all tensors ---
+    # --- Only use deduplicated/sorted df for all tensors ---
     # Prepare tensors
     print("Stacking height_values and flood_values to tensors...")
     height_spatial_data = np.stack(df['height_values'].values)
@@ -119,7 +120,7 @@ def preprocess_flood_dataframe(
     target_flood_tensor = torch.tensor(target_flood_flat, dtype=torch.float32)
     print(f"target_flood_tensor shape: {target_flood_tensor.shape}")
 
-    # --- FIX: Scalar features tensor must also use deduplicated/sorted df ---
+    # --- Scalar features tensor must also use deduplicated/sorted df ---
     if not available_scalar_features:
         scalar_features_tensor = torch.empty((len(df), 0), dtype=torch.float32)
         num_scalar_features = 0
@@ -206,14 +207,14 @@ def preprocess_flood_dataframe(
 @asset
 def preprocessing(data_loading: dict = None, utils: dict = None) -> dict:
     """
-    Asset Dagster: Tiền xử lý dữ liệu đầu vào từ asset data_loading hoặc tạo dữ liệu giả nếu không có.
+    Dagster Asset: Preprocess input data from the data_loading asset or create dummy data if not available.
     """
     if data_loading is not None:
         df = data_loading["df"]
     elif utils is not None and "create_dummy_data" in utils:
-        # Nếu không có data_loading thì dùng utils để tạo dummy data
+        # If data_loading is not available, use utils to create dummy data
         df = utils["create_dummy_data"](img_height=40, img_width=40)
     else:
-        raise ValueError("Cần có data_loading hoặc utils để tạo dữ liệu đầu vào.")
+        raise ValueError("Require data_loading or utils to create input data.")
     return preprocess_flood_dataframe(df)
 

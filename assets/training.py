@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from tqdm import tqdm
 
-# Vòng lặp huấn luyện đơn giản với early stopping
+# Simple training loop with early stopping
 def simple_train_loop(model, graph_data, device, num_epochs=50, patience_epochs=10, lr=0.001, weight_decay=5e-4):
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     criterion = nn.MSELoss()
@@ -95,15 +95,15 @@ def simple_train_loop(model, graph_data, device, num_epochs=50, patience_epochs=
 @asset
 def training(model, preprocessing) -> dict:
     """
-    Asset Dagster: Train model với dữ liệu đã preprocessing.
+    Dagster Asset: Train model with preprocessed data.
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    # Debug: kiểm tra keys trong preprocessing
+    # Debug: check keys in preprocessing
     print("[DEBUG] preprocessing keys:", list(preprocessing.keys()))
 
-    # Lấy scalar features và scaler từ preprocessing (giả sử preprocessing đã trả về)
+    # Get scalar features and scaler from preprocessing (assuming preprocessing returns them)
     scalar_features = preprocessing.get("scalar_features", None)
     scaler = preprocessing.get("scaler", None)
     if scalar_features is None or scaler is None:
@@ -115,7 +115,7 @@ def training(model, preprocessing) -> dict:
             "Check the output of the preprocessing asset."
         )
 
-    # Chuẩn bị data object (dùng dict thay vì class để tránh lỗi pickle)
+    # Prepare data object (use dict instead of class to avoid pickle errors)
     data_obj = {
         "x_spatial": preprocessing["height_spatial_tensor"],
         "x_scalar": preprocessing["scalar_features_tensor"],
@@ -126,7 +126,7 @@ def training(model, preprocessing) -> dict:
         "test_mask": preprocessing["test_mask"],
     }
 
-    # Debug: kiểm tra shapes
+    # Debug: check shapes
     num_nodes = data_obj["x_spatial"].shape[0]
     assert data_obj["train_mask"].shape[0] == num_nodes, (
         f"train_mask shape {data_obj['train_mask'].shape} does not match number of nodes {num_nodes}. "
@@ -137,16 +137,16 @@ def training(model, preprocessing) -> dict:
     )
     # -----------------------------------------
 
-    # Sử dụng simple_train_loop thay cho train_model
+    # Use simple_train_loop instead of train_model
     simple_train_loop(
         model, data_obj, device,
         num_epochs=50, patience_epochs=10, lr=0.001, weight_decay=5e-4
     )
     result = {
         "model": model,
-        "scaler": scaler,  # scaler đã fit
-        "scalar_features": scalar_features,  # danh sách tên cột
+        "scaler": scaler,  # fitted scaler
+        "scalar_features": scalar_features,  # list of column names
         "device": device,
-        "data_obj": data_obj, # chứa dữ liệu đã chuẩn bị
+        "data_obj": data_obj, # contains prepared data
     }
     return result

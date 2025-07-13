@@ -19,7 +19,7 @@ def evaluate_model_on_test(model, data_obj, device, verbose=True, num_show=5):
 
     if verbose:
         print(f'Test Set Results: MSE Loss: {mse_loss:.4f}, MAE: {mae:.4f}')
-        # Display example prediction/actual value for 1 test node
+        # Show example prediction/actual value for one test node
         original_test_node_indices = torch.where(test_mask)[0]
         if len(original_test_node_indices) > 0:
             example_node_idx_in_test_set = 0
@@ -48,7 +48,7 @@ def evaluation(training) -> dict:
     torch.save(model.state_dict(), model_path)
     print(f"Model saved to {model_path}")
 
-    # Kiểm tra phân phối ground truth trên test set
+    # Check ground truth distribution on the test set
     test_mask = data_obj["test_mask"]
     targets = data_obj["y"]
     test_targets = targets[test_mask]
@@ -57,15 +57,15 @@ def evaluation(training) -> dict:
     percent_nonzero = 100 * num_nonzero / test_targets.numel()
     print(f"Test set: {num_nodes} nodes, {percent_nonzero:.2f}% of flood values are nonzero.")
 
-    # Lấy ra tất cả node test có ground truth khác 0
+    # Get all test nodes with nonzero ground truth
     nonzero_indices = (test_targets.abs().sum(dim=1) > 0).nonzero(as_tuple=True)[0]
     nonzero_pred = None
     nonzero_actual = None
     if len(nonzero_indices) > 0:
-        # Lấy toàn bộ giá trị dự đoán và thực tế của các node này
+        # Get all predicted and actual values for these nodes
         nonzero_pred = out[test_mask][nonzero_indices].detach().cpu().numpy()
         nonzero_actual = test_targets[nonzero_indices].detach().cpu().numpy()
-        print(f"\nCó {len(nonzero_indices)} test node có ground truth khác 0.")
+        print(f"\nThere are {len(nonzero_indices)} test nodes with nonzero ground truth.")
         for i in range(len(nonzero_indices)):
             print(f"Node {i}:")
             print("  Predicted:", nonzero_pred[i][:5])

@@ -6,27 +6,27 @@ from dagster import asset, Output
 
 @asset
 def fetch_flood_data(context, run_similar: pd.DataFrame) -> Output[None]:
-    context.log.info(f"📥 Nhận {len(run_similar)} sự kiện")
+    context.log.info(f"📥 Received {len(run_similar)} events")
 
-    # Khởi tạo Earth Engine
+    # Initialize Earth Engine
     try:
         ee.Initialize(project='ee-nguyendangkhoi9517')
     except Exception as e:
-        context.log.warning("⚠️ Earth Engine đã được khởi tạo trước hoặc lỗi nhỏ: " + str(e))
+        context.log.warning("⚠️ Earth Engine already initialized or minor error: " + str(e))
 
-    # Dữ liệu input
+    # Input data
     df = run_similar.copy()
     pending_path = '/data/intermediate/similar_to_yenbai.csv'
 
-    # Nếu file pending tồn tại, chỉ xử lý các event còn lại trong file này
+    # If the pending file exists, only process remaining events in this file
     if os.path.exists(pending_path):
         df = pd.read_csv(pending_path)
-        context.log.info(f"🔄 Tiếp tục từ pending: {len(df)} sự kiện.")
+        context.log.info(f"🔄 Continue from pending: {len(df)} events.")
     else:
-        # Nếu chưa có file pending, tạo mới từ input ban đầu
+        # If there is no pending file, create a new one from the initial input
         df.to_csv(pending_path, index=False)
 
-    # Khai báo nguồn dữ liệu EE
+    # Declare EE data sources
     dem = ee.ImageCollection('COPERNICUS/DEM/GLO30').select('DEM').mosaic()
     chirps = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY').select('precipitation')
     flood_collection = ee.ImageCollection('GLOBAL_FLOOD_DB/MODIS_EVENTS/V1')
@@ -103,7 +103,7 @@ def fetch_flood_data(context, run_similar: pd.DataFrame) -> Output[None]:
                 })
 
             except Exception as e:
-                context.log.warning(f"⚠️ Lỗi xử lý square {square_idx}: {e}")
+                context.log.warning(f"⚠️ Error processing square {square_idx}: {e}")
                 continue
 
         return results
@@ -118,20 +118,20 @@ def fetch_flood_data(context, run_similar: pd.DataFrame) -> Output[None]:
 
         output_path = f"data/intermediate/event_data/data_{event_index}.csv"
         event_df.to_csv(output_path, index=False)
-        context.log.info(f"✅ Lưu kết quả: {output_path}")
+        context.log.info(f"✅ Saved result: {output_path}")
 
-        # Xóa event khỏi pending
+        # Remove event from pending
         df = df[df["event_index"] != event_index]
         df.to_csv(pending_path, index=False)
-        context.log.info(f"🧹 Đã loại bỏ event {event_index}. Còn lại: {len(df)}")
+        context.log.info(f"🧹 Removed event {event_index}. Remaining: {len(df)}")
 
-        # Xóa event khỏi file gốc dbscan_clustering
+        # Remove event from the original dbscan_clustering file
         original_path = '/data/intermediate/similar_to_yenbai.csv'
         if os.path.exists(original_path):
             original_df = pd.read_csv(original_path)
             original_df = original_df[original_df["event_index"] != event_index]
             original_df.to_csv(original_path, index=False)
-            context.log.info(f"🗑️ Đã loại bỏ event {event_index} khỏi file gốc dbscan_clustering.")
+            context.log.info(f"🗑️ Removed event {event_index} from the original dbscan_clustering file.")
 
     return Output(None)
-    context.log.info("✅ Hoàn thành quá trình lấy dữ liệu lũ lụt.")
+    context.log.info("✅ Finished fetching flood data.")

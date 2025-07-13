@@ -8,8 +8,8 @@ from dagster import asset
 
 def parse_list_string_to_2d_array(s, img_height, img_width):
     """
-    Chuyển chuỗi dạng '[0.1, 0.2, ...]' thành mảng numpy 2D (img_height, img_width).
-    Nếu lỗi hoặc sai shape sẽ trả về mảng 0s.
+    Convert a string like '[0.1, 0.2, ...]' to a 2D numpy array (img_height, img_width).
+    If error or wrong shape, return a zero array.
     """
     flat_list_len = img_height * img_width
     if isinstance(s, (list, np.ndarray)):
@@ -26,7 +26,7 @@ def parse_list_string_to_2d_array(s, img_height, img_width):
 
 def create_dummy_data(img_height, img_width, num_events=3, squares_per_event_range=(5, 10), num_water_clusters=5):
     """
-    Sinh dữ liệu giả lập cho flood dataset, dùng để debug hoặc demo pipeline.
+    Generate dummy data for the flood dataset, used for debugging or pipeline demo.
     """
     data = []
     for event_idx in range(num_events):
@@ -55,13 +55,13 @@ def create_dummy_data(img_height, img_width, num_events=3, squares_per_event_ran
 
 def print_tensor_info(tensor, name="Tensor"):
     """
-    In thông tin shape, dtype, min/max/mean của tensor.
+    Print shape, dtype, min/max/mean of a tensor.
     """
     print(f"{name}: shape={tuple(tensor.shape)}, dtype={tensor.dtype}, min={tensor.min().item():.4f}, max={tensor.max().item():.4f}, mean={tensor.mean().item():.4f}")
 
 def set_seed(seed=42):
     """
-    Đặt seed cho numpy, torch, random để đảm bảo tái lập kết quả.
+    Set seed for numpy, torch, random to ensure reproducibility.
     """
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -73,7 +73,7 @@ def set_seed(seed=42):
 @asset
 def utils():
     """
-    Asset Dagster: Các hàm tiện ích cho pipeline.
+    Dagster Asset: Utility functions for the pipeline.
     """
     return {
         "parse_list_string_to_2d_array": parse_list_string_to_2d_array,

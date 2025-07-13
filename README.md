@@ -112,10 +112,4 @@ cd APP/yenbai_app
 streamlit run rain_yenbai.py
 ```
 
----
-
-## 📌 Author
-
-**Nguyen Dang Khoi**
-
 

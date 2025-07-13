@@ -38,7 +38,7 @@ The pipeline is implemented using Dagster with `@asset` and `@job`:
 | `data_loading.py`         | Load and normalize input data                    |
 | `preprocessing.py`        | Normalize and create GNN/CNN tensors             |
 | `combine_csv.py`          | Combine data from flood events                   |
-| `dbscan_clustering.py`    | Cluster floods using DBSCAN                      |
+| `run_similar.py`          | Find events that share similarities with Vietnam |
 | `water_cluster.py`        | Cluster regions with permanent water             |
 | `training.py`             | Train the GNN-CNN-LSTM model                     |
 | `model.py`                | Deep learning model definition                   |
@@ -57,7 +57,6 @@ The pipeline is implemented using Dagster with `@asset` and `@job`:
 To launch the Dagster UI:
 
 ```bash
-cd flood_pipeline
 dagster dev
 # Access: http://localhost:3000
 ```
@@ -95,7 +94,7 @@ dagster dev
 * Weather information table for a specific province for the next 5 days.
 
 ```bash
-cd flood_pipeline/APP/vn_web
+cd APP/vn_web
 streamlit run app.py
 ```
 
@@ -109,7 +108,7 @@ streamlit run app.py
 * Input data from `yenbai_predictions_clean.csv`.
 
 ```bash
-cd flood_pipeline/APP/yenbai_app
+cd APP/yenbai_app
 streamlit run rain_yenbai.py
 ```
 

@@ -8,34 +8,6 @@ This project aims to forecast and warn about flooding in Yen Bai province using 
 
 ---
 
-## 🖼️ Interface
-
-Below are some screenshots of the application's main features:
-
-**1. National Weather Forecast Map**
-
-<img src="vn1.png" alt="Vietnam Weather Forecast Map" width="700"/>
-
-*Shows the weather forecast map of Vietnam with rainfall warning areas highlighted.*
-
-**2. Rainfall Warning by District (Yen Bai)**
-
-<img src="yenbai3.png" alt="Rainfall Warning Yen Bai" width="700"/>
-
-*Displays rainfall warnings by district in Yen Bai province, along with a table of rainfall statistics.*
-
-**3. List of Communes/Towns at Risk of Flooding**
-
-<img src="yenbai2.png" alt="Flood Risk List" width="700"/>
-
-*Lists communes/towns with flood risk levels and predicted flood metrics.*
-
-**4. Flood Risk Map with Details**
-
-<img src="yenbai1.png" alt="Flood Risk Map Yen Bai" width="700"/>
-
----
-
 ## ⚙️ Installation
 
 ```bash
@@ -113,6 +85,30 @@ dagster dev
 ---
 
 ## 🌐 Streamlit Application
+
+Below are some screenshots of the application's main features:
+
+**1. National Weather Forecast Map**
+
+<img src="vn1.png" alt="Vietnam Weather Forecast Map" width="700"/>
+
+*Shows the weather forecast map of Vietnam with rainfall warning areas highlighted.*
+
+**2. Rainfall Warning by District (Yen Bai)**
+
+<img src="yenbai3.png" alt="Rainfall Warning Yen Bai" width="700"/>
+
+*Displays rainfall warnings by district in Yen Bai province, along with a table of rainfall statistics.*
+
+**3. List of Communes/Towns at Risk of Flooding**
+
+<img src="yenbai2.png" alt="Flood Risk List" width="700"/>
+
+*Lists communes/towns with flood risk levels and predicted flood metrics.*
+
+**4. Flood Risk Map with Details**
+
+<img src="yenbai1.png" alt="Flood Risk Map Yen Bai" width="700"/>
 
 ### 1️⃣ `app.py` – **Nationwide Rainfall Map**
 

@@ -101,9 +101,9 @@ for name3, total_flood_score in xa_ngap_dict.items():
         "Xã/Thị trấn": split_words(name3),
         "⚠️ Mức độ cảnh báo": alert_text,
         "Tổng độ ngập dự đoán": round(total_flood_score, 2),
-        "Mưa TB/ngày (3d)": round(rain_3d_avg / 3, 2),
-        "Mưa TB/ngày (7d)": round(rain_7d_avg / 7, 2),
-        "Mưa TB/ngày (1m)": round(rain_1m_avg / 30, 2),
+        "Mưa TB/ngày (3d)": round(rain_3d_avg ,2),
+        "Mưa TB/ngày (7d)": round(rain_7d_avg, 2),
+        "Mưa TB/ngày (1m)": round(rain_1m_avg, 2),
     })
 
 df_alert = pd.DataFrame(records)

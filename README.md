@@ -88,43 +88,21 @@ dagster dev
 
 Below are some screenshots of the application's main features:
 
-**1. National Weather Forecast Map**
-
-<img src="vn1.png" alt="Vietnam Weather Forecast Map" width="700"/>
-
-*Shows the weather forecast map of Vietnam with rainfall warning areas highlighted.*
-
-**2. Rainfall Warning by District (Yen Bai)**
+**1. Rainfall Warning by District (Yen Bai)**
 
 <img src="yenbai3.png" alt="Rainfall Warning Yen Bai" width="700"/>
 
 *Displays rainfall warnings by district in Yen Bai province, along with a table of rainfall statistics.*
 
-**3. List of Communes/Towns at Risk of Flooding**
+**2. List of Communes/Towns at Risk of Flooding**
 
 <img src="yenbai2.png" alt="Flood Risk List" width="700"/>
 
 *Lists communes/towns with flood risk levels and predicted flood metrics.*
 
-**4. Flood Risk Map with Details**
+**3. Flood Risk Map with Details**
 
 <img src="yenbai1.png" alt="Flood Risk Map Yen Bai" width="700"/>
-
-### 1️⃣ `app.py` – **Nationwide Rainfall Map**
-
-* Displays weather layers and rainfall from GEOGloWS.
-* Allows selection of area and map base layer.
-* For users to observe overall weather.
-* Weather information table for a specific province for the next 5 days.
-
-```bash
-cd APP/vn_web
-streamlit run app.py
-```
-
----
-
-### 2️⃣ `rain_yenbai.py` – **Flood Warning for Yen Bai**
 
 * Map interface for flood warnings in Yen Bai.
 * Select threshold, display terrain, water, and flood clusters.

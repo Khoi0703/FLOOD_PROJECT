@@ -111,7 +111,7 @@ Below are some screenshots of the application's main features:
 
 **4. Scheduling Jobs in Dagster**
 
-<img src="dagster_schedule.png" alt="Dagster Job Scheduling" width="700"/>
+<img src="automation.png" alt="Dagster Job Scheduling" width="700"/>
 
 *Shows how to schedule jobs in Dagster for automated data processing and prediction tasks.*
 

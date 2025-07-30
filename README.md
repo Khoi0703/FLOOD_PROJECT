@@ -61,6 +61,10 @@ dagster dev
 # Access: http://localhost:3000
 ```
 
+<img src="dagster_ui.png" alt="Dagster UI Screenshot" width="700"/>
+
+*Screenshot of the Dagster UI interface for managing and monitoring pipelines.*
+
 ---
 
 ## 📊 Data

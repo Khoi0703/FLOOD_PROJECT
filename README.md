@@ -109,6 +109,12 @@ Below are some screenshots of the application's main features:
 * Information about communes/towns with 3 warning levels.
 * Input data from `yenbai_predictions_clean.csv`.
 
+**4. Scheduling Jobs in Dagster**
+
+<img src="dagster_schedule.png" alt="Dagster Job Scheduling" width="700"/>
+
+*Shows how to schedule jobs in Dagster for automated data processing and prediction tasks.*
+
 ```bash
 cd APP/yenbai_app
 streamlit run rain_yenbai.py

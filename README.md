@@ -90,6 +90,11 @@ dagster dev
 
 ## 🌐 Streamlit Application
 
+```bash
+cd APP/yenbai_app
+streamlit run rain_yenbai.py
+```
+
 Below are some screenshots of the application's main features:
 
 **1. Rainfall Warning by District (Yen Bai)**
@@ -119,9 +124,5 @@ Below are some screenshots of the application's main features:
 
 *Shows how to schedule jobs in Dagster for automated data processing and prediction tasks.*
 
-```bash
-cd APP/yenbai_app
-streamlit run rain_yenbai.py
-```
 
 
